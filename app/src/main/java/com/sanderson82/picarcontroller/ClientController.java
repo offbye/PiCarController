@@ -24,23 +24,23 @@ public enum ClientController {
      */
     public void connect(final String server, final int port)
     {
-        Thread t = new Thread((Runnable) () -> {
-            try{
-                InetAddress serverAddress = InetAddress.getByName(server);
-                outputSocket = new Socket(server,port);
+        Thread t = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    InetAddress serverAddress = InetAddress.getByName(server);
+                    outputSocket = new Socket(server, port);
 
-                System.out.println("Connected on port:"+port);
+                    System.out.println("Connected on port:" + port);
 
-                out = new PrintWriter(outputSocket.getOutputStream(), true);
-                in = new BufferedReader(new InputStreamReader(outputSocket.getInputStream()));
+                    out = new PrintWriter(outputSocket.getOutputStream(), true);
+                    in = new BufferedReader(new InputStreamReader(outputSocket.getInputStream()));
+                } catch (IOException ex) {
+                    System.err.println("Couldn't get IO for the connection to the server " + ex.toString());
+                }
             }
-            catch(IOException ex)
-            {
-                System.err.println("Couldn't get IO for the connection to the server " + ex.toString());
-            }
-
         });
         t.start();
+
     }
 
     /**

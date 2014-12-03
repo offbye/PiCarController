@@ -2,6 +2,7 @@ package com.sanderson82.picarcontroller;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -9,9 +10,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements ControllerFragment.OnFragmentInteractionListener {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,8 +27,8 @@ public class MainActivity extends Activity {
                     .add(R.id.container, new PlaceholderFragment())
                     .commit();
         }
-    }
 
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -47,10 +52,40 @@ public class MainActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void onFragmentInteraction(Uri uri) {
+    }
+
     /**
      * A placeholder fragment containing a simple view.
      */
     public static class PlaceholderFragment extends Fragment {
+        EditText ipAddressField;
+        EditText portField;
+        TextView resultTextView;
+        OnClickListener m_onClickListener=new OnClickListener() {
+            @Override
+            public void onClick(View p_v)
+            {
+                switch(p_v.getId())
+                {
+                    case R.id.connectButton:
+
+                        String server = ipAddressField.getText().toString();
+                        int port = Integer.parseInt(portField.getText().toString());
+                        ClientController.INSTANCE.connect(server, port);
+                        if (!ClientController.INSTANCE.isConnected()) {
+                            getFragmentManager().beginTransaction()
+                                    .replace(R.id.container, new ControllerFragment())
+                                    .commit();
+                        } else {
+                            resultTextView.setVisibility(View.VISIBLE);
+                            resultTextView.setText("Connection failed");
+                        }
+
+                        break;
+                }
+            }
+        };
 
         public PlaceholderFragment() {
         }
@@ -59,19 +94,13 @@ public class MainActivity extends Activity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+            ipAddressField = (EditText) rootView.findViewById(R.id.ipAddressField);
+            portField = (EditText) rootView.findViewById(R.id.portTextField);
+            resultTextView = (TextView) rootView.findViewById(R.id.resultTextView);
+            Button connectButton = (Button) rootView.findViewById(R.id.connectButton);
+            connectButton.setOnClickListener(m_onClickListener);
             return rootView;
         }
-        OnClickListener m_onClickListener=new OnClickListener() {
-            @Override
-            public void onClick(View p_v)
-            {
-                switch(p_v.getId())
-                {
-                    case R.id.connectButton:
-                        break;
-                }
-            }
-        };
 
     }
 }

@@ -1,64 +1,75 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context=".MainActivity$PlaceholderFragment"
-    android:id="@+id/mainLayout">
+    tools:context=".MainActivity$PlaceholderFragment">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical">
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-            <TextView android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <TextView
                 android:id="@+id/ipAddressLabel"
-                android:text="IP Address"
-                android:width="120dp" />
-
-            <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/editText"
-                android:text="192.168.2.10"
-                android:layout_weight="1" />
+                android:width="120dp"
+                android:text="IP Address" />
+
+            <EditText
+                android:id="@+id/ipAddressField"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="192.168.2.10" />
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/portLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/portLabel"
-                android:text="Port"
-                android:width="120dp" />
+                android:width="120dp"
+                android:text="Port" />
 
             <EditText
+                android:id="@+id/portTextField"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/portTextField"
-                android:text="5000"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:text="5000" />
         </LinearLayout>
 
         <Button
+            android:id="@+id/connectButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/connect"
-            android:id="@+id/connectButton" />
+            android:text="@string/connect" />
+
+        <TextView
+            android:id="@+id/resultTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text=""
+            android:visibility="gone" />
 
     </LinearLayout>
 
