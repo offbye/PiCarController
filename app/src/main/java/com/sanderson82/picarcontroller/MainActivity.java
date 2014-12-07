@@ -61,6 +61,10 @@ public class MainActivity extends Activity implements ControllerFragment.OnFragm
     public static class PlaceholderFragment extends Fragment {
         EditText ipAddressField;
         EditText portField;
+
+        EditText camIPAddressField;
+        EditText camPortField;
+
         TextView resultTextView;
         OnClickListener m_onClickListener=new OnClickListener() {
             @Override
@@ -72,7 +76,14 @@ public class MainActivity extends Activity implements ControllerFragment.OnFragm
 
                         String server = ipAddressField.getText().toString();
                         int port = Integer.parseInt(portField.getText().toString());
+
                         ClientController.INSTANCE.connect(server, port);
+
+                        server = camIPAddressField.getText().toString();
+                        port = Integer.parseInt(camPortField.getText().toString());
+
+                        WebCamController.INSTANCE.setHostPort(server, port);
+
                         if (!ClientController.INSTANCE.isConnected()) {
                             getFragmentManager().beginTransaction()
                                     .replace(R.id.container, new ControllerFragment())
@@ -96,6 +107,10 @@ public class MainActivity extends Activity implements ControllerFragment.OnFragm
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
             ipAddressField = (EditText) rootView.findViewById(R.id.ipAddressField);
             portField = (EditText) rootView.findViewById(R.id.portTextField);
+
+            camIPAddressField = (EditText) rootView.findViewById(R.id.camIPAddressField);
+            camPortField = (EditText) rootView.findViewById(R.id.camPortTextField);
+
             resultTextView = (TextView) rootView.findViewById(R.id.resultTextView);
             Button connectButton = (Button) rootView.findViewById(R.id.connectButton);
             connectButton.setOnClickListener(m_onClickListener);

@@ -4,6 +4,11 @@
     android:layout_height="match_parent"
     tools:context="com.sanderson82.picarcontroller.ControllerFragment">
 
+    <com.camera.simplemjpeg.MjpegView
+        android:id="@+id/mv"
+        android:layout_width="360dp"
+        android:layout_height="240dp" />
+
     <!-- TODO: Update blank fragment layout -->
     <com.sanderson82.picarcontroller.HighlightImageView
         android:id="@+id/steeringImageView"

@@ -11,6 +11,8 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.camera.simplemjpeg.MjpegView;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -21,6 +23,7 @@ import android.widget.ImageView;
  * create an instance of this fragment.
  */
 public class ControllerFragment extends Fragment {
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -117,8 +120,13 @@ public class ControllerFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_controller, container, false);
+
         ImageView steeringImage = (ImageView) rootView.findViewById(R.id.steeringImageView);
         steeringImage.setOnTouchListener(steeringListener);
+
+        MjpegView mv = (MjpegView) rootView.findViewById(R.id.mv);
+        WebCamController.INSTANCE.connect(mv);
+
         return rootView;
     }
 
@@ -169,6 +177,21 @@ public class ControllerFragment extends Fragment {
         mListener = null;
     }
 
+    public void onResume() {
+        super.onResume();
+        WebCamController.INSTANCE.resumePlayback();
+    }
+
+    public void onPause() {
+        super.onPause();
+        WebCamController.INSTANCE.stopPlayback();
+    }
+
+    public void onDestroy() {
+        WebCamController.INSTANCE.freeMemory();
+        super.onDestroy();
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -183,5 +206,4 @@ public class ControllerFragment extends Fragment {
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
     }
-
 }
