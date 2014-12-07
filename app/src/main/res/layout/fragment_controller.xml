@@ -6,10 +6,19 @@
 
     <com.camera.simplemjpeg.MjpegView
         android:id="@+id/mv"
-        android:layout_width="360dp"
-        android:layout_height="240dp" />
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
 
-    <!-- TODO: Update blank fragment layout -->
+    <com.sanderson82.picarcontroller.HighlightImageView
+        android:id="@+id/cameraImageView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:src="@drawable/square_steering_controller" />
+
     <com.sanderson82.picarcontroller.HighlightImageView
         android:id="@+id/steeringImageView"
         android:layout_width="100dp"

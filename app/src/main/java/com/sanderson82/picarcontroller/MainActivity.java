@@ -2,6 +2,8 @@ package com.sanderson82.picarcontroller;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -65,6 +67,9 @@ public class MainActivity extends Activity implements ControllerFragment.OnFragm
         EditText camIPAddressField;
         EditText camPortField;
 
+        EditText camWidthField;
+        EditText camHeightField;
+
         TextView resultTextView;
         OnClickListener m_onClickListener=new OnClickListener() {
             @Override
@@ -82,12 +87,19 @@ public class MainActivity extends Activity implements ControllerFragment.OnFragm
                         server = camIPAddressField.getText().toString();
                         port = Integer.parseInt(camPortField.getText().toString());
 
+                        int width = Integer.parseInt(camWidthField.getText().toString());
+                        int height = Integer.parseInt(camHeightField.getText().toString());
+
                         WebCamController.INSTANCE.setHostPort(server, port);
+                        WebCamController.INSTANCE.setImageSize(width, height);
 
                         if (!ClientController.INSTANCE.isConnected()) {
-                            getFragmentManager().beginTransaction()
-                                    .replace(R.id.container, new ControllerFragment())
-                                    .commit();
+
+                            FragmentManager fm = getFragmentManager();
+                            FragmentTransaction ft = fm.beginTransaction();
+                            ft.replace(R.id.container, new ControllerFragment());
+                            ft.addToBackStack(null);
+                            ft.commit();
                         } else {
                             resultTextView.setVisibility(View.VISIBLE);
                             resultTextView.setText("Connection failed");
@@ -110,6 +122,9 @@ public class MainActivity extends Activity implements ControllerFragment.OnFragm
 
             camIPAddressField = (EditText) rootView.findViewById(R.id.camIPAddressField);
             camPortField = (EditText) rootView.findViewById(R.id.camPortTextField);
+
+            camWidthField = (EditText) rootView.findViewById(R.id.camWidthTextField);
+            camHeightField = (EditText) rootView.findViewById(R.id.camHeightTextField);
 
             resultTextView = (TextView) rootView.findViewById(R.id.resultTextView);
             Button connectButton = (Button) rootView.findViewById(R.id.connectButton);

@@ -18,14 +18,22 @@ public enum WebCamController {
     private int port;
     private String host;
     private MjpegView mv = null;
+    private int width = 320;
+    private int height = 240;
 
     public void setHostPort(String host, int port) {
         this.host = host;
         this.port = port;
     }
 
+    public void setImageSize(int width, int height) {
+        this.width = width;
+        this.height = height;
+    }
+
     public void connect(MjpegView mv) {
         this.mv = mv;
+        MjpegView.setImageSize(640, 480);
         new DoRead().execute(host, Integer.toString(port));
     }
 
