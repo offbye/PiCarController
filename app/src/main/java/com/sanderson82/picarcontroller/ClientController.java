@@ -49,9 +49,10 @@ public enum ClientController {
      * @param command The command
      * @param value The value of the command
      */
-    public void sendCommand(char command, char value) {
-        out.print(command);
-        out.print(value);
+    public void sendCommand(int command, int value) {
+        System.out.println("Sending command:" + (int) command + " value = " + (int) value);
+        out.println(command + " " + value);
+        out.flush();
     }
 
     /**

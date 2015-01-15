@@ -63,7 +63,7 @@ public class ControllerFragment extends Fragment {
 
             System.out.println("height=" + height + " width=" + width);
             System.out.println("x=" + lastTouchX + " y=" + lastTouchY);
-//            handleControllerMessage((int)lastTouchX,(int)lastTouchY, height,width);
+            handleControllerMessage((int) lastTouchX, (int) lastTouchY, height, width);
             return false;
         }
     };
@@ -161,14 +161,14 @@ public class ControllerFragment extends Fragment {
         int ewPercent = getPercent(x_loc, width);
 
         if (y_loc > height / 2)
-            ClientController.INSTANCE.sendCommand(ClientCommand.MOVE_FORWARD.getValue(), (char) nsPercent);
+            ClientController.INSTANCE.sendCommand(ClientCommand.MOVE_FORWARD.getValue(), nsPercent);
         else
-            ClientController.INSTANCE.sendCommand(ClientCommand.MOVE_REVERSE.getValue(), (char) nsPercent);
+            ClientController.INSTANCE.sendCommand(ClientCommand.MOVE_REVERSE.getValue(), nsPercent);
 
         if (x_loc > width / 2)
-            ClientController.INSTANCE.sendCommand(ClientCommand.STEER_RIGHT.getValue(), (char) ewPercent);
+            ClientController.INSTANCE.sendCommand(ClientCommand.STEER_RIGHT.getValue(), ewPercent);
         else
-            ClientController.INSTANCE.sendCommand(ClientCommand.STEER_LEFT.getValue(), (char) ewPercent);
+            ClientController.INSTANCE.sendCommand(ClientCommand.STEER_LEFT.getValue(), ewPercent);
     }
 
     @Override
