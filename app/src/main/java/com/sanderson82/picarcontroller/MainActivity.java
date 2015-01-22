@@ -1,5 +1,6 @@
 package com.sanderson82.picarcontroller;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -73,7 +74,8 @@ public class MainActivity extends Activity implements ControllerFragment.OnFragm
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class PlaceholderFragment extends Fragment {
+    @SuppressLint("ValidFragment")
+    public class PlaceholderFragment extends Fragment {
         EditText ipAddressField;
         EditText portField;
 
@@ -88,6 +90,30 @@ public class MainActivity extends Activity implements ControllerFragment.OnFragm
         public PlaceholderFragment() {
         }
 
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+            ipAddressField = (EditText) rootView.findViewById(R.id.ipAddressField);
+            ipAddressField.setText(sharedpreferences.getString(PREF_MOTOR_SERVER, "192.168.2.10"));
+            portField = (EditText) rootView.findViewById(R.id.portTextField);
+            portField.setText(sharedpreferences.getInt(PREF_MOTOR_SERVER_PORT, 5000) + "");
+
+            camIPAddressField = (EditText) rootView.findViewById(R.id.camIPAddressField);
+            camIPAddressField.setText(sharedpreferences.getString(PREF_CAM_SERVER, "192.168.2.10"));
+            camPortField = (EditText) rootView.findViewById(R.id.camPortTextField);
+            camPortField.setText(sharedpreferences.getInt(PREF_CAM_SERVER_PORT, 4000) + "");
+
+            camWidthField = (EditText) rootView.findViewById(R.id.camWidthTextField);
+            camWidthField.setText(sharedpreferences.getInt(PREF_CAM_WIDTH, 320) + "");
+            camHeightField = (EditText) rootView.findViewById(R.id.camHeightTextField);
+            camHeightField.setText(sharedpreferences.getInt(PREF_CAM_HEIGHT, 240) + "");
+            resultTextView = (TextView) rootView.findViewById(R.id.resultTextView);
+            Button connectButton = (Button) rootView.findViewById(R.id.connectButton);
+            connectButton.setOnClickListener(m_onClickListener);
+            return rootView;
+        }
+
         OnClickListener m_onClickListener = new OnClickListener() {
             @Override
             public void onClick(View p_v)
@@ -98,8 +124,44 @@ public class MainActivity extends Activity implements ControllerFragment.OnFragm
 
                         String server = ipAddressField.getText().toString();
                         int port = Integer.parseInt(portField.getText().toString());
+                        ClientController.INSTANCE.addConnectionListener(new ConnectionListener() {
+                            @Override
+                            public void clientConnection() {
+                                runOnUiThread(new Runnable() {
 
+                                    @Override
+                                    public void run() {
+                                        resultTextView.setVisibility(View.INVISIBLE);
+                                        FragmentManager fm = getFragmentManager();
+                                        FragmentTransaction ft = fm.beginTransaction();
+                                        ft.replace(R.id.container, new ControllerFragment());
+                                        ft.addToBackStack(null);
+                                        ft.commit();
+                                    }
+                                });
+                            }
+
+                            @Override
+                            public void clientDisconnected() {
+
+                            }
+
+                            @Override
+                            public void connectionError() {
+                                runOnUiThread(new Runnable() {
+
+                                    @Override
+                                    public void run() {
+                                        resultTextView.setVisibility(View.VISIBLE);
+                                        resultTextView.setText("Connection failed");
+                                    }
+                                });
+
+                            }
+                        });
                         ClientController.INSTANCE.connect(server, port);
+                        resultTextView.setVisibility(View.VISIBLE);
+                        resultTextView.setText("Connecting ....");
 
                         String camServer = camIPAddressField.getText().toString();
                         int camPort = Integer.parseInt(camPortField.getText().toString());
@@ -118,47 +180,12 @@ public class MainActivity extends Activity implements ControllerFragment.OnFragm
                         edit.putInt(PREF_CAM_HEIGHT, height);
                         edit.putInt(PREF_CAM_WIDTH, width);
                         edit.commit();
-
-                        if (!ClientController.INSTANCE.isConnected()) {
-
-                            FragmentManager fm = getFragmentManager();
-                            FragmentTransaction ft = fm.beginTransaction();
-                            ft.replace(R.id.container, new ControllerFragment());
-                            ft.addToBackStack(null);
-                            ft.commit();
-                        } else {
-                            resultTextView.setVisibility(View.VISIBLE);
-                            resultTextView.setText("Connection failed");
-                        }
-
                         break;
                 }
             }
         };
 
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            ipAddressField = (EditText) rootView.findViewById(R.id.ipAddressField);
-            ipAddressField.setText(sharedpreferences.getString(PREF_MOTOR_SERVER, "192.168.2.10"));
-            portField = (EditText) rootView.findViewById(R.id.portTextField);
-            portField.setText(sharedpreferences.getInt(PREF_MOTOR_SERVER_PORT, 5000));
 
-            camIPAddressField = (EditText) rootView.findViewById(R.id.camIPAddressField);
-            camIPAddressField.setText(sharedpreferences.getString(PREF_CAM_SERVER, "192.168.2.10"));
-            camPortField = (EditText) rootView.findViewById(R.id.camPortTextField);
-            camPortField.setText(sharedpreferences.getInt(PREF_CAM_SERVER_PORT, 4000));
-
-            camWidthField = (EditText) rootView.findViewById(R.id.camWidthTextField);
-            camWidthField.setText(sharedpreferences.getInt(PREF_CAM_WIDTH, 320));
-            camHeightField = (EditText) rootView.findViewById(R.id.camHeightTextField);
-            camHeightField.setText(sharedpreferences.getInt(PREF_CAM_HEIGHT, 240));
-            resultTextView = (TextView) rootView.findViewById(R.id.resultTextView);
-            Button connectButton = (Button) rootView.findViewById(R.id.connectButton);
-            connectButton.setOnClickListener(m_onClickListener);
-            return rootView;
-        }
 
 
 

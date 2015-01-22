@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.Vector;
 
 /**
  * A simple socket connection to send commands to the pi
@@ -13,9 +14,10 @@ import java.net.Socket;
 public enum ClientController {
     INSTANCE;
 
-    Socket outputSocket = null;
-    PrintWriter out = null;
-    BufferedReader in = null;
+    private Socket outputSocket = null;
+    private PrintWriter out = null;
+    private BufferedReader in = null;
+    private Vector<ConnectionListener> listeners = new Vector<ConnectionListener>();
 
     /**
      * Connects the client to the server
@@ -34,8 +36,10 @@ public enum ClientController {
 
                     out = new PrintWriter(outputSocket.getOutputStream(), true);
                     in = new BufferedReader(new InputStreamReader(outputSocket.getInputStream()));
+                    notifyOnConnect();
                 } catch (IOException ex) {
                     System.err.println("Couldn't get IO for the connection to the server " + ex.toString());
+                    notifyOnConnectError();
                 }
             }
         });
@@ -74,5 +78,29 @@ public enum ClientController {
     {
         return outputSocket==null?false:outputSocket.isConnected();
     }
+
+    public void addConnectionListener(ConnectionListener cl) {
+        listeners.add(cl);
+    }
+
+    public void removeConnectionListener(ConnectionListener cl) {
+        listeners.remove(cl);
+    }
+
+    private void notifyOnConnect() {
+        for (ConnectionListener cl : listeners)
+            cl.clientConnection();
+    }
+
+    private void notifyOnDisconnect() {
+        for (ConnectionListener cl : listeners)
+            cl.clientDisconnected();
+    }
+
+    private void notifyOnConnectError() {
+        for (ConnectionListener cl : listeners)
+            cl.connectionError();
+    }
+
 
 }
