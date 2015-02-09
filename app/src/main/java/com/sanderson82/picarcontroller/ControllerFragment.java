@@ -33,6 +33,7 @@ public class ControllerFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     private OnFragmentInteractionListener mListener;
+
     private OnTouchListener steeringListener = new OnTouchListener() {
         float lastTouchX = 0;
         float lastTouchY = 0;
@@ -64,6 +65,41 @@ public class ControllerFragment extends Fragment {
             System.out.println("height=" + height + " width=" + width);
             System.out.println("x=" + lastTouchX + " y=" + lastTouchY);
             handleControllerMessage((int) lastTouchX, (int) lastTouchY, height, width);
+            return false;
+        }
+    };
+
+    private OnTouchListener cameraSteeringListener = new OnTouchListener() {
+        float lastTouchX = 0;
+        float lastTouchY = 0;
+
+        @Override
+        public boolean onTouch(View v, MotionEvent motionEvent) {
+
+            int height = v.getHeight();
+            int width = v.getWidth();
+
+            int midHeight = height / 2;
+            int midWidth = width / 2;
+
+            ImageView iv = (ImageView) v;
+
+            switch (motionEvent.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                case MotionEvent.ACTION_MOVE:
+                    lastTouchX = motionEvent.getX();
+                    lastTouchY = motionEvent.getY();
+                    break;
+                case MotionEvent.ACTION_UP:
+                    lastTouchX = midHeight;
+                    lastTouchY = midWidth;
+                    break;
+            }
+
+
+            System.out.println("height=" + height + " width=" + width);
+            System.out.println("x=" + lastTouchX + " y=" + lastTouchY);
+            handleCameraSteeringControllerMessage((int) lastTouchX, (int) lastTouchY, height, width);
             return false;
         }
     };
@@ -124,6 +160,9 @@ public class ControllerFragment extends Fragment {
         ImageView steeringImage = (ImageView) rootView.findViewById(R.id.steeringImageView);
         steeringImage.setOnTouchListener(steeringListener);
 
+        ImageView camImage = (ImageView) rootView.findViewById(R.id.cameraImageView);
+        camImage.setOnTouchListener(cameraSteeringListener);
+
         MjpegView mv = (MjpegView) rootView.findViewById(R.id.mv);
         WebCamController.INSTANCE.connect(mv);
 
@@ -169,6 +208,29 @@ public class ControllerFragment extends Fragment {
             ClientController.INSTANCE.sendCommand(ClientCommand.STEER_RIGHT.getValue(), ewPercent);
         else
             ClientController.INSTANCE.sendCommand(ClientCommand.STEER_LEFT.getValue(), ewPercent);
+    }
+
+    /**
+     * Sends the messages through the controller based on the input from the controller
+     *
+     * @param x_loc
+     * @param y_loc
+     * @param height
+     * @param width
+     */
+    private void handleCameraSteeringControllerMessage(int x_loc, int y_loc, int height, int width) {
+        int nsPercent = getPercent(y_loc, height);
+        int ewPercent = getPercent(x_loc, width);
+
+        if (y_loc > height / 2)
+            ClientController.INSTANCE.sendCommand(ClientCommand.CAM_UP.getValue(), nsPercent);
+        else
+            ClientController.INSTANCE.sendCommand(ClientCommand.CAM_DOWN.getValue(), nsPercent);
+
+        if (x_loc > width / 2)
+            ClientController.INSTANCE.sendCommand(ClientCommand.CAM_RIGHT.getValue(), ewPercent);
+        else
+            ClientController.INSTANCE.sendCommand(ClientCommand.CAM_LEFT.getValue(), ewPercent);
     }
 
     @Override

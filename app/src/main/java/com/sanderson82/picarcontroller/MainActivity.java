@@ -116,10 +116,8 @@ public class MainActivity extends Activity implements ControllerFragment.OnFragm
 
         OnClickListener m_onClickListener = new OnClickListener() {
             @Override
-            public void onClick(View p_v)
-            {
-                switch(p_v.getId())
-                {
+            public void onClick(View p_v) {
+                switch (p_v.getId()) {
                     case R.id.connectButton:
 
                         String server = ipAddressField.getText().toString();
@@ -184,10 +182,6 @@ public class MainActivity extends Activity implements ControllerFragment.OnFragm
                 }
             }
         };
-
-
-
-
 
     }
 }
